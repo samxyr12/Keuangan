@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Tabungan Pintar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary-50: #eff6ff;
+            --color-primary-500: #3b82f6;
+            --color-primary-600: #2563eb;
+            --color-success: #22c55e;
+            --color-warning: #eab308;
+            --color-gray-50: #f8fafc;
+            --color-gray-100: #f1f5f9;
+            --color-gray-200: #e2e8f0;
+            --color-gray-700: #334155;
+            --color-gray-800: #1e293b;
+            --radius-lg: 1rem;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --spacing-4: 1rem;
+            --spacing-6: 1.5rem;
+            --spacing-8: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-gray-100) 100%);
+            min-height: 100vh;
+            padding: var(--spacing-8);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-8);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--color-gray-800);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .savings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .savings-card {
+            background: var(--color-gray-50);
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-gray-200);
+            text-align: center;
+        }
+
+        .savings-card h3 {
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-4);
+            font-size: 1.1rem;
+        }
+
+        .savings-card p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-gray-800);
+        }
+
+        .progress-container {
+            margin-bottom: var(--spacing-8);
+            padding: var(--spacing-6);
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-gray-200);
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: var(--color-gray-200);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: var(--spacing-4);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600));
+            transition: width 0.3s ease;
+        }
+
+        .savings-form {
+            background: var(--color-gray-50);
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-4);
+            color: var(--color-gray-700);
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--color-gray-200);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            background: white;
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-gray-200);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .savings-history {
+            background: white;
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-gray-200);
+        }
+
+        .history-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4);
+            border-bottom: 1px solid var(--color-gray-200);
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-4);
+            }
+
+            .container {
+                padding: var(--spacing-4);
+            }
+
+            .savings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Halaman Tabungan Pintar</h1>
+            <p>Kelola dan pantau progres tabungan Anda</p>
+        </div>
+
+        <div class="savings-grid">
+            <div class="savings-card">
+                <h3>Total Tabungan</h3>
+                <p id="totalSavings">Rp 0</p>
+            </div>
+            <div class="savings-card">
+                <h3>Target Tabungan</h3>
+                <p id="savingsGoal">Rp 0</p>
+            </div>
+            <div class="savings-card">
+                <h3>Sisa Target</h3>
+                <p id="remainingGoal">Rp 0</p>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <h3>Progress Target Tabungan</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <p id="progressText" style="text-align: center; margin-top: 10px;">0%</p>
+        </div>
+
+        <div class="savings-form">
+            <h3>Set Target Tabungan</h3>
+            <div class="form-group">
+                <label>Target Tabungan (Rp)</label>
+                <input type="number" id="savingsGoalInput" placeholder="Masukkan target tabungan...">
+            </div>
+            <button onclick="setSavingsGoal()">Set Target</button>
+        </div>
+
+        <div class="savings-form">
+            <h3>Tambah Tabungan</h3>
+            <div class="form-group">
+                <label>Jumlah Tabungan (Rp)</label>
+                <input type="number" id="addSavingsInput" placeholder="Masukkan jumlah tabungan...">
+            </div>
+            <div class="form-group">
+                <label>Kategori Tabungan</label>
+                <select id="savingsCategoryInput">
+                    <option value="darurat">Darurat</option>
+                    <option value="liburan">Liburan</option>
+                    <option value="pendidikan">Pendidikan</option>
+                    <option value="lainnya">Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Catatan (Opsional)</label>
+                <input type="text" id="savingsNoteInput" placeholder="Contoh: Gaji bulanan...">
+            </div>
+            <button onclick="addSavings()">Tambah Tabungan</button>
+        </div>
+
+        <div class="chart-container">
+            <h3>Grafik Perkembangan Tabungan</h3>
+            <canvas id="savingsChart"></canvas>
+        </div>
+
+        <div class="savings-history">
+            <h3>Riwayat Tabungan</h3>
+            <div id="savingsHistory"></div>
+        </div>
+
+        <div class="savings-reminder">
+            <h3>Atur Pengingat Tabungan</h3>
+            <div class="form-group">
+                <label>Tanggal Pengingat</label>
+                <input type="date" id="reminderDateInput">
+            </div>
+            <div class="form-group">
+                <label>Jumlah Tabungan (Rp)</label>
+                <input type="number" id="reminderAmountInput" placeholder="Masukkan jumlah tabungan...">
+            </div>
+            <button onclick="setReminder()">Set Pengingat</button>
+        </div>
+
+        <button onclick="exportData()">Ekspor Data</button>
+    </div>
+
+    <script>
+        class SavingsTracker {
+            constructor() {
+                this.transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+                this.savingsGoal = parseFloat(localStorage.getItem('savingsGoal')) || 0;
+                this.reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+                this.chart = null;
+
+                this.initializeDisplay();
+                this.updateDisplay();
+                this.checkReminders();
+            }
+
+            initializeDisplay() {
+                document.getElementById('savingsGoalInput').value = this.savingsGoal;
+                this.createChart();
+            }
+
+            setSavingsGoal(amount) {
+                this.savingsGoal = amount;
+                localStorage.setItem('savingsGoal', amount);
+                this.updateDisplay();
+            }
+
+            addSavings(amount, note = '', category = '') {
+                if (amount > 0) {
+                    const transaction = {
+                        type: 'savings',
+                        amount: amount,
+                        date: new Date().toISOString(),
+                        note: note,
+                        category: category
+                    };
+
+                    this.transactions.push(transaction);
+                    localStorage.setItem('transactions', JSON.stringify(this.transactions));
+                    this.updateDisplay();
+                } else {
+                    alert('Jumlah tabungan harus lebih besar dari 0');
+                }
+            }
+
+            getTotalSavings() {
+                return this.transactions
+                    .filter(t => t.type === 'savings')
+                    .reduce((total, t) => total + t.amount, 0);
+            }
+
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            }
+
+            updateDisplay() {
+                const totalSavings = this.getTotalSavings();
+                const remainingGoal = Math.max(this.savingsGoal - totalSavings, 0);
+                const progress = this.savingsGoal > 0 ? (totalSavings / this.savingsGoal) * 100 : 0;
+
+                document.getElementById('totalSavings').textContent = this.formatCurrency(totalSavings);
+                document.getElementById('savingsGoal').textContent = this.formatCurrency(this.savingsGoal);
+                document.getElementById('remainingGoal').textContent = this.formatCurrency(remainingGoal);
+                
+                document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+                document.getElementById('progressText').textContent = `${Math.min(progress, 100).toFixed(1)}%`;
+
+                this.updateHistory();
+                this.updateChart();
+            }
+
+            updateHistory() {
+                const historyContainer = document.getElementById('savingsHistory');
+                historyContainer.innerHTML = '';
+
+                const savingsTransactions = this.transactions
+                    .filter(t => t.type === 'savings')
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                savingsTransactions.forEach(transaction => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    
+                    const date = new Date(transaction.date).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    div.innerHTML = `
+                        <span>${date}</span>
+                        <span>${transaction.note || 'Tabungan'} (${transaction.category})</span>
+                        <span>${this.formatCurrency(transaction.amount)}</span>
+                    `;
+
+                    historyContainer.appendChild(div);
+                });
+
+                if (savingsTransactions.length === 0) {
+                    historyContainer.innerHTML = '<p style="text-align: center; padding: 20px;">Belum ada riwayat tabungan</p>';
+                }
+            }
+
+            createChart() {
+                const ctx = document.getElementById('savingsChart').getContext('2d');
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Total Tabungan',
+                            data: [],
+                            borderColor: '#3b82f6',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => this.formatCurrency(value)
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateChart() {
+                if (!this.chart) return;
+
+                const savingsData = this.transactions
+                    .filter(t => t.type === 'savings')
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                let runningTotal = 0;
+                const chartData = savingsData.map(t => {
+                    runningTotal += t.amount;
+                    return {
+                        x: new Date(t.date).toLocaleDateString('id-ID', {
+                            month: 'short',
+                            day: 'numeric'
+                        }),
+                        y: runningTotal
+                    };
+                });
+
+                this.chart.data.labels = chartData.map(d => d.x);
+                this.chart.data.datasets[0].data = chartData.map(d => d.y);
+                this.chart.update();
+            }
+
+            setReminder(date, amount) {
+                const reminder = {
+                    date: new Date(date).toISOString(),
+                    amount: amount
+                };
+                this.reminders.push(reminder);
+                localStorage.setItem('reminders', JSON.stringify(this.reminders));
+                alert('Pengingat berhasil diset!');
+            }
+
+            checkReminders() {
+                const now = new Date();
+                this.reminders.forEach(reminder => {
+                    const reminderDate = new Date(reminder.date);
+                    if (reminderDate <= now) {
+                        alert(`Ingat untuk menabung Rp ${this.formatCurrency(reminder.amount)}!`);
+                        this.reminders = this.reminders.filter(r => r !== reminder);
+                    }
+                });
+                localStorage.setItem('reminders', JSON.stringify(this.reminders));
+            }
+        }
+
+        function setSavingsGoal() {
+            const amount = parseFloat(document.getElementById('savingsGoalInput').value);
+            if (amount >= 0) {
+                savingsTracker.setSavingsGoal(amount);
+            } else {
+                alert('Target tabungan harus lebih besar dari atau sama dengan 0');
+            }
+        }
+
+        function addSavings() {
+            const amount = parseFloat(document.getElementById('addSavingsInput').value);
+            const note = document.getElementById('savingsNoteInput').value;
+            const category = document.getElementById('savingsCategoryInput').value;
+
+            if (amount > 0) {
+                savingsTracker.addSavings(amount, note, category);
+                
+                // Reset input fields
+                document.getElementById('addSavingsInput').value = '';
+                document.getElementById('savingsNoteInput').value = '';
+            } else {
+                alert('Jumlah tabungan harus lebih besar dari 0');
+            }
+        }
+
+        function setReminder() {
+            const date = document.getElementById('reminderDateInput').value;
+            const amount = parseFloat(document.getElementById('reminderAmountInput').value);
+
+            if (date && amount > 0) {
+                savingsTracker.setReminder(date, amount);
+            } else {
+                alert('Harap masukkan tanggal dan jumlah yang valid.');
+            }
+        }
+
+        function exportData() {
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + transactions.map(e => `${e.date},${e.note || ''},${e.category},${e.amount}`).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "riwayat_tabungan.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize the savings tracker when the page loads
+        let savingsTracker;
+        document.addEventListener('DOMContentLoaded', () => {
+            savingsTracker = new SavingsTracker();
+        });
+        
+        
+        
+        
+        
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    
+</body>
+</html>
