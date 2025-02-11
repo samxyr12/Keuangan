@@ -1,488 +1,221 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-   
-    <title>Pencatatan Keuangan Premium</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <title>Pencatatan Keuangan Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-:root {
-    /* Modern Color Palette */
-    --color-background: #0f1114;
-    --color-surface: #1a1e23;
-    --color-primary: #6b63ff;
-    --color-secondary: #4ecdc4;
-    --color-text-primary: #e6e6e6;
-    --color-text-secondary: #8f9bad;
-    --color-accent-green: #2ecc71;
-    --color-accent-red: #e74c3c;
-    --color-accent-yellow: #f39c12;
-
-    /* Typography */
-    --font-primary: 'Space Grotesk', 'Inter', sans-serif;
-
-    /* Glassmorphic Effects */
-    --glass-background: rgba(26, 30, 35, 0.6);
-    --glass-blur: blur(15px);
-    --glass-border: rgba(255, 255, 255, 0.1);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-primary) transparent;
-}
-
-body {
-    font-family: var(--font-primary);
-    background: linear-gradient(135deg, #121417, #0a0c0f);
-    color: var(--color-text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-
-.container {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 20px;
-    min-height: 100vh;
-}
-
-/* Sidebar Navigation */
-.sidebar {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid var(--glass-border);
-    position: sticky;
-    top: 20px;
-    height: calc(100vh - 40px);
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-logo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.sidebar-logo img {
-    width: 50px;
-    margin-right: 15px;
-}
-
-.sidebar-logo h1 {
-    font-size: 1.5rem;
-    color: var(--color-text-primary);
-}
-
-.sidebar-menu {
-    flex-grow: 1;
-}
-
-.sidebar-menu ul {
-    list-style: none;
-}
-
-.sidebar-menu li {
-    margin-bottom: 15px;
-}
-
-.sidebar-menu a {
-    display: flex;
-    align-items: center;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    padding: 12px 15px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.sidebar-menu a:hover,
-.sidebar-menu a.active {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-primary);
-}
-
-.sidebar-menu a i {
-    margin-right: 15px;
-    font-size: 1.2rem;
-}
-
-/* Main Content Area */
-.main-content {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 20px;
-}
-
-/* Stats and Quick Overview */
-.stats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.stats-card {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 15px;
-    padding: 25px;
-    border: 1px solid var(--glass-border);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.stats-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.stats-card h3 {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.stats-card p {
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
-.stats-card.income p { color: var(--color-accent-green); }
-.stats-card.expense p { color: var(--color-accent-red); }
-.stats-card.savings p { color: var(--color-accent-yellow); }
-
-/* Transaction Form */
-.form-container {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid var(--glass-border);
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 10px;
-    color: var(--color-text-secondary);
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: var(--color-text-primary);
-    transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(107, 99, 255, 0.2);
-}
-
-button {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, var(--color-primary), #5448ff);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(107, 99, 255, 0.3);
-}
-
-/* Transaction List */
-.transaction-list {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.transaction-item {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr auto;
-    gap: 15px;
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-}
-
-.transaction-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.delete-btn {
-    background: var(--color-accent-red);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
-    transition: all 0.3s ease;
-}
-
-.delete-btn:hover {
-    opacity: 0.8;
-}
-
-/* Chart and Analytics */
-.chart-container {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid var(--glass-border);
-}
-
-/* Responsive Design */
-@media screen and (max-width: 1200px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        position: relative;
-        height: auto;
-    }
-
-    .main-content {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .stats-container,
-    .transaction-item {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--color-primary);
-    border-radius: 4px;
-}
-
-.filter-container {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid var(--glass-border);
-    margin-bottom: 20px;
-}
-
-.filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-.select-wrapper,
-.date-range-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.filter-label,
-.date-label {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-}
-
-.custom-select,
-.custom-date {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: var(--color-text-primary);
-    padding: 12px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--color-text-secondary) 50%),
-                      linear-gradient(135deg, var(--color-text-secondary) 50%, transparent 50%);
-    background-position: calc(100% - 20px) calc(1em + 2px),
-                         calc(100% - 15px) calc(1em + 2px);
-    background-size: 5px 5px,
-                     5px 5px;
-    background-repeat: no-repeat;
-}
-
-.custom-select:focus,
-.custom-date:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(107, 99, 255, 0.2);
-}
-
-.date-range-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.date-inputs {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.date-field {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.date-separator {
-    color: var(--color-text-secondary);
-    white-space: nowrap;
-}
-
-/* Responsive Adjustments */
-@media screen and (max-width: 768px) {
-    .filters {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .date-inputs {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
-/* Placeholder Styles */
-.custom-select option,
-.custom-date {
-    background-color: var(--color-surface);
-    color: var(--color-text-primary);
-}
-
-.custom-select option:checked {
-    background-color: var(--color-primary);
-    color: white;
-}
-
-
-/* Gaya untuk Kontainer Chart */
-.chart-container {
-    background: var(--glass-background);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid var(--glass-border);
-    position: relative; /* Untuk efek overlay */
-    overflow: hidden; /* Menghindari overflow */
-}
-
-/* Gaya untuk Judul Chart */
-.chart-container h2 {
-    color: var(--color-text-primary);
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    text-align: center; /* Pusatkan judul */
-}
-
-/* Gaya untuk Canvas */
-.chart-container canvas {
-    width: 100% !important; /* Memastikan canvas mengisi lebar kontainer */
-    height: auto !important; /* Memastikan tinggi canvas otomatis */
-    border-radius: 10px; /* Radius sudut untuk canvas */
-    transition: transform 0.3s ease; /* Transisi untuk efek hover */
-}
-
-/* Efek Hover pada Canvas */
-.chart-container:hover canvas {
-    transform: scale(1.02); /* Sedikit memperbesar canvas saat hover */
-} 
-
-
-/* Gaya untuk Kontainer Form */
-.form-container {
-    background: var(--glass-background); /* Latar belakang dengan efek glassmorphism */
-    backdrop-filter: var(--glass-blur); /* Efek blur di belakang */
-    border-radius: 20px; /* Sudut yang halus */
-    padding: 30px; /* Ruang di dalam kontainer */
-    border: 1px solid var(--glass-border); /* Border dengan warna transparan */
-    margin-bottom: 20px; /* Jarak bawah untuk kontainer */
-}
-
-/* Gaya untuk Judul Form */
-.form-container h2 {
-    color: var(--color-text-primary); /* Warna teks judul */
-    font-size: 1.5rem; /* Ukuran font judul */
-    margin-bottom: 20px; /* Jarak bawah judul */
-    text-align: center; /* Pusatkan judul */
-}
-
-/* Gaya untuk Tombol */
-button {
-    background: linear-gradient(135deg, var(--color-primary), #5448ff); /* Warna gradien untuk tombol */
-    color: white; /* Warna teks putih */
-    border: none; /* Tanpa border */
-    padding: 15px 20px; /* Padding untuk tombol */
-    border-radius: 10px; /* Sudut yang halus */
-    font-weight: 600; /* Tebal font */
-    font-size: 1rem; /* Ukuran font */
-    cursor: pointer; /* Kursor pointer saat hover */
-    transition: all 0.3s ease; /* Transisi halus untuk efek */
-    width: 100%; /* Lebar penuh */
-    text-transform: uppercase; /* Huruf kapital */
-    letter-spacing: 0.05em; /* Jarak antar huruf */
-    margin-bottom: 15px; /* Jarak antar tombol */
-}
-
-/* Efek Hover untuk Tombol */
-button:hover {
-    transform: translateY(-3px); /* Menggeser tombol sedikit ke atas saat hover */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Bayangan saat hover */
-}
-
-/* Efek Saat Tombol Ditekan */
-button:active {
-    transform: translateY(0); /* Kembali ke posisi semula saat ditekan */
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Bayangan saat ditekan */
-}
-
- </style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card.expense {
+            background: linear-gradient(135deg, #dc3545, #961824);
+        }
+
+        .stats-card.income {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .stats-card.savings {
+            background: linear-gradient(135deg, #ffc107, #c69500);
+        }
+
+        .stats-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stats-card p {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .form-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1557b0;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .transaction-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .transaction-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .transaction-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .transaction-category {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            padding: 8px 15px;
+            width: auto;
+            font-size: 0.9em;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .chart-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .notification {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-item {
+                grid-template-columns: 1fr auto;
+                gap: 10px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -559,74 +292,43 @@ button:active {
             </form>
         </div>
 
-  
-  <div class="filter-container">
-<div class="filters">
-    <div class="select-wrapper">
-        <label for="filterCategory" class="filter-label">Kategori</label>
-        <select id="filterCategory" class="custom-select">
-            <option value="all">Semua Kategori</option>
-            <option value="jajan">Jajan</option>
-            <option value="topup">Top Up</option>
-            <option value="dipinjam">Dipinjam</option>
-            <option value="transport">Transport</option>
-            <option value="makanan">Makanan</option>
-            <option value="belanja">Belanja</option>
-            <option value="hiburan">Hiburan</option>
-            <option value="kesehatan">Kesehatan</option>
-            <option value="pendidikan">Pendidikan</option>
-            <option value="lainnya">Lainnya</option>
-        </select>
-    </div>
+        <div class="filters">
+            <select id="filterCategory">
+                <option value="all">Semua Kategori</option>
+                <option value="jajan">Jajan</option>
+                <option value="topup">Top Up</option>
+                <option value="dipinjam">Dipinjam</option>
+                <option value="transport">Transport</option>
+                <option value="makanan">Makanan</option>
+                <option value="belanja">Belanja</option>
+                <option value="hiburan">Hiburan</option>
+                <option value="kesehatan">Kesehatan</option>
+                <option value="pendidikan">Pendidikan</option>
+                <option value="lainnya">Lainnya</option>
+            </select>
 
-
-        <div class="select-wrapper">
-            <label for="filterType" class="filter-label">Tipe</label>
-            <select id="filterType" class="custom-select">
+            <select id="filterType">
                 <option value="all">Semua Tipe</option>
                 <option value="expense">Pengeluaran</option>
                 <option value="income">Pemasukan</option>
                 <option value="savings">Tabungan</option>
             </select>
-        </div>
 
-        <div class="date-range-group">
-            <label class="date-label">Rentang Tanggal</label>
-            <div class="date-inputs">
-                <div class="date-field">
-                    <input type="date" id="startDate" class="custom-date">
-                    <span class="date-separator">sampai</span>
-                </div>
-                <div class="date-field">
-                    <input type="date" id="endDate" class="custom-date">
-                </div>
+            <div class="form-group">
+                <label>Rentang Tanggal</label>
+                <input type="date" id="startDate">
+                <input type="date" id="endDate">
             </div>
         </div>
-    </div>
-</div>
 
         <div id="transactionList" class="transaction-list"></div>
 
         <div class="chart-container" id="chartContainer">
-    <h2>Grafik Pemasukan dan Pengeluaran</h2>
-    <canvas id="transactionChart"></canvas>
-</div>
-
-<div class="chart-container" id="categoryChartContainer">
-    <h2>Analisis Pengeluaran Berdasarkan Kategori</h2>
-    <canvas id="categoryChart"></canvas>
-</div>
-
-        <div class="form-container">
-            <h2>Laporan Bulanan</h2>
-            <button id="generateReport">Generate Laporan Bulanan</button>
-           <button id="exportData" class="export-button">Ekspor Data ke Excel</button>
-            
-            <div id="monthlyReport" style="margin-top: 15px;"></div>
+            <h2>Grafik Pemasukan dan Pengeluaran</h2>
+            <canvas id="transactionChart"></canvas>
         </div>
     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
 class FinanceTracker {
@@ -640,9 +342,7 @@ class FinanceTracker {
         this.endDate = document.getElementById('endDate');
         this.notification = document.getElementById('notification');
         this.chartContainer = document.getElementById('chartContainer');
-        this.categoryChartContainer = document.getElementById('categoryChartContainer');
         this.chart = null;
-        this.categoryChart = null;
 
         document.getElementById('transactionDate').valueAsDate = new Date();
 
@@ -660,59 +360,11 @@ class FinanceTracker {
         this.filterType.addEventListener('change', () => this.updateDisplay());
         this.startDate.addEventListener('change', () => this.updateDisplay());
         this.endDate.addEventListener('change', () => this.updateDisplay());
-        document.getElementById('generateReport').addEventListener('click', () => this.generateMonthlyReport());
-        document.getElementById('exportData').addEventListener('click', () => this.exportData());
     }
 
-    // Fungsi ekspor data
-    exportData() {
-    const workbook = XLSX.utils.book_new();
-    const worksheetData = [['ID', 'Jumlah (Rp)', 'Kategori', 'Tipe', 'Catatan', 'Tanggal']];
-    
-    this.transactions.forEach(transaction => {
-        worksheetData.push([
-            transaction.id,
-            transaction.amount,
-            transaction.category,
-            transaction.type,
-            transaction.note,
-            transaction.date
-        ]);
-    });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Transaksi');
-
-    // Simpan file Excel sebagai blob
-    const excelBlob = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-    const blob = new Blob([this.s2ab(excelBlob)], { type: 'application/octet-stream' });
-
-    // Buat ZIP
-    const zip = new JSZip();
-    zip.file('transaksi.xlsx', blob);
-
-    // Simpan ZIP
-    zip.generateAsync({ type: 'blob' }).then(function(content) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = 'transaksi.zip';
-        link.click();
-    });
-}
-
-// Helper function to convert string to array buffer
-s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-        view[i] = s.charCodeAt(i) & 0xFF;
-    }
-    return buf;
-}
-    
     addTransaction() {
         const amount = parseFloat(document.getElementById('amount').value);
-        const category = this.autoCategorize(document.getElementById('note').value);
+        const category = document.getElementById('category').value;
         const type = document.getElementById('type').value;
         const note = document.getElementById('note').value;
         const date = document.getElementById('transactionDate').value;
@@ -747,24 +399,6 @@ s2ab(s) {
         this.form.reset();
         document.getElementById('transactionDate').valueAsDate = new Date();
         this.showNotification('Transaksi berhasil ditambahkan', 'success');
-    }
-
-    autoCategorize(note) {
-        const keywords = {
-            'makanan': ['makan', 'restoran', 'cafe'],
-            'transport': ['angkutan', 'transportasi', 'taksi'],
-            'hiburan': ['film', 'konser', 'hiburan'],
-            'belanja': ['belanja', 'shopping', 'beli'],
-            'kesehatan': ['obat', 'dokter', 'kesehatan'],
-            'pendidikan': ['sekolah', 'kursus', 'pendidikan'],
-        };
-
-        for (const [category, words] of Object.entries(keywords)) {
-            if (words.some(word => note.toLowerCase().includes(word))) {
-                return category;
-            }
-        }
-        return 'lainnya'; // Kategori default
     }
 
     calculateCurrentBalance() {
@@ -892,15 +526,6 @@ s2ab(s) {
         }
     }
 
-    isInDateRange(date) {
-        const start = new Date(this.startDate.value);
-        const end = new Date(this.endDate.value);
-        const transactionDate = new Date(date);
-        
-        return (!this.startDate.value || transactionDate >= start) && 
-               (!this.endDate.value || transactionDate <= end);
-    }
-
     getFilteredTransactions() {
         return this.transactions.filter(t => {
             const categoryMatch = this.filterCategory.value === 'all' || t.category === this.filterCategory.value;
@@ -910,12 +535,20 @@ s2ab(s) {
         });
     }
 
+    isInDateRange(date) {
+        const start = new Date(this.startDate.value);
+        const end = new Date(this.endDate.value);
+        const transactionDate = new Date(date);
+        
+        return (!this.startDate.value || transactionDate >= start) && 
+               (!this.endDate.value || transactionDate <= end);
+    }
+
     updateDisplay() {
         const filteredTransactions = this.getFilteredTransactions();
         this.displayTransactions(filteredTransactions);
         this.updateTotals();
         this.updateChart(filteredTransactions);
-        this.updateCategoryChart(filteredTransactions);
     }
 
     updateChart(transactions) {
@@ -949,65 +582,6 @@ s2ab(s) {
         });
     }
 
-    updateCategoryChart(transactions) {
-        const categoryData = transactions.reduce((acc, transaction) => {
-            if (transaction.type === 'expense') {
-                acc[transaction.category] = (acc[transaction.category] || 0) + transaction.amount;
-            }
-            return acc;
-        }, {});
-
-        const labels = Object.keys(categoryData);
-        const data = Object.values(categoryData);
-
-        if (this.categoryChart) {
-            this.categoryChart.destroy();
-        }
-
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        this.categoryChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Pengeluaran Berdasarkan Kategori',
-                    data: data,
-                    backgroundColor: data.map(() => `hsl(${Math.random() * 360}, 70%, 50%)`),
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Analisis Pengeluaran'
-                    }
-                }
-            }
-        });
-    }
-
-    generateMonthlyReport() {
-        const monthlyData = this.transactions.reduce((acc, transaction) => {
-            const month = new Date(transaction.date).toLocaleString('default', { month: 'long', year: 'numeric' });
-            if (!acc[month]) {
-                acc[month] = { income: 0, expense: 0, savings: 0 };
-            }
-            acc[month][transaction.type] += transaction.amount;
-            return acc;
-        }, {});
-
-        let reportHtml = '<h3>Laporan Bulanan</h3><ul>';
-        for (const [month, data] of Object.entries(monthlyData)) {
-            reportHtml += `<li>${month}: Pemasukan: ${this.formatCurrency(data.income)}, Pengeluaran: ${this.formatCurrency(data.expense)}, Tabungan: ${this.formatCurrency(data.savings)}</li>`;
-        }
-        reportHtml += '</ul>';
-        document.getElementById('monthlyReport').innerHTML = reportHtml;
-    }
-
     showNotification(message, type) {
         this.notification.textContent = message;
         this.notification.className = `notification ${type}`;
@@ -1022,14 +596,6 @@ s2ab(s) {
 document.addEventListener('DOMContentLoaded', function() {
     window.financeTracker = new FinanceTracker();
 });
-
-
-
-
     </script>
-    
-    
 </body>
 </html>
-
-
