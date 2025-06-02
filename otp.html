@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+   
+    <title>Manajemen OTP - Pencatatan Keuangan Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6; /* Updated to a brighter blue */
+            --primary-dark: #2563eb;
+            --secondary: #6b7280;
+            --accent: #06b6d4;
+            --expense: #ef4444;
+            --income: #22c55e;
+            --light: #ffffff;
+            --dark: #111827;
+            --gray: #9ca3af;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 95%;
+            margin: 2rem auto;
+            padding: 1rem;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: 1rem;
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: var(--expense);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            color: var(--expense);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        button.secondary {
+            background: var(--secondary);
+        }
+
+        button.secondary:hover {
+            background: #4b5563;
+        }
+
+        .otp-display {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .otp-code {
+            font-family: monospace;
+            color: var(--primary);
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+        }
+
+        .no-otp {
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .timer-container {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .timer-display {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 1s linear;
+        }
+
+        .history-section {
+            margin-top: 2rem;
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .search-bar input {
+            padding-right: 2.5rem;
+        }
+
+        .history-section h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--light);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .history-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .history-table th.sortable:hover {
+            background: var(--primary-dark);
+        }
+
+        .history-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .history-table tr:hover {
+            background: #e5e7eb;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-right: 0.5rem;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid var(--light);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--box-shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--box-shadow);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: var(--light);
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .history-table,
+        body.dark-mode .modal-content {
+            background: #1f2937;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode label {
+            color: var(--light);
+        }
+
+        body.dark-mode input {
+            background: #374151;
+            border-color: #4b5563;
+            color: var(--light);
+        }
+
+        body.dark-mode .otp-display {
+            background: #374151;
+            color: var(--light);
+        }
+
+        body.dark-mode .history-table tr:nth-child(even) {
+            background: #374151;
+        }
+
+        body.dark-mode .history-table tr:hover {
+            background: #4b5563;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .otp-display {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .history-table th,
+            .history-table td {
+                font-size: 0.85rem;
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .otp-display {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modal-message"></h3>
+            <div class="modal-actions">
+                <button id="modal-confirm" class="secondary">Confirm</button>
+                <button id="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="header fade-in">
+            <h1 id="title">Manajemen OTP</h1>
+            <div class="header-actions">
+                <select id="language-select" aria-label="Pilih Bahasa">
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="en">English</option>
+                </select>
+                <button id="themeToggle" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+                <a href="index.html"><button><i class="fas fa-arrow-left"></i> <span id="back-text">Kembali</span></button></a>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="form-group">
+                <label for="transaction-input"><i class="fas fa-key"></i> <span id="transaction-id-label">ID Transaksi</span></label>
+                <div class="search-bar">
+                    <input type="text" id="transaction-input" placeholder="Masukkan ID Transaksi" required aria-describedby="transaction-error">
+                    <i class="fas fa-key input-icon"></i>
+                </div>
+                <div id="transaction-error" class="error-message"></div>
+            </div>
+            <button id="getOtpButton"><i class="fas fa-search"></i> <span id="get-otp-text">Lihat OTP</span></button>
+            <div id="otp-display" class="otp-display" style="display: none;">
+                <span id="otp-message"></span>
+                <button id="copyOtpButton" class="action-btn" style="display: none;" aria-label="Salin OTP"><i class="fas fa-copy"></i></button>
+            </div>
+            <div class="timer-container" id="timer-container" style="display: none;">
+                <div id="timer-display" class="timer-display"></div>
+                <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+            </div>
+        </div>
+
+        <div class="history-section card fade-in">
+            <h2 id="history-title">Riwayat OTP</h2>
+            <div class="history-controls">
+                <div class="search-bar">
+                    <input type="text" id="history-search" placeholder="Cari ID Transaksi..." aria-label="Cari Riwayat">
+                    <i class="fas fa-search input-icon"></i>
+                </div>
+                <button id="exportHistoryButton" class="secondary"><i class="fas fa-download"></i> <span id="export-history-text">Ekspor Riwayat</span></button>
+            </div>
+            <table class="history-table" aria-label="Riwayat OTP">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="transactionId">ID Transaksi <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="otp">Kode OTP <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="timestamp">Waktu <i class="fas fa-sort"></i></th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        class OtpManager {
+            constructor() {
+                // DOM elements
+                this.transactionIdInput = document.getElementById('transaction-input');
+                this.getOtpButton = document.getElementById('getOtpButton');
+                this.otpDisplay = document.getElementById('otp-display');
+                this.otpMessage = document.getElementById('otp-message');
+                this.copyOtpButton = document.getElementById('copyOtpButton');
+                this.timerContainer = document.getElementById('timer-container');
+                this.timerDisplay = document.getElementById('timer-display');
+                this.progressFill = document.getElementById('progress-fill');
+                this.errorMessage = document.getElementById('transaction-error');
+                this.historyTableBody = document.getElementById('history-table-body');
+                this.languageSelect = document.getElementById('language-select');
+                this.themeToggle = document.getElementById('themeToggle');
+                this.loading = document.getElementById('loading');
+                this.exportHistoryButton = document.getElementById('exportHistoryButton');
+                this.historySearch = document.getElementById('history-search');
+                this.toast = document.getElementById('toast');
+                this.modal = document.getElementById('modal');
+                this.modalMessage = document.getElementById('modal-message');
+                this.modalConfirm = document.getElementById('modal-confirm');
+                this.modalCancel = document.getElementById('modal-cancel');
+
+                this.secretKey = 'my-secret-key-123';
+                this.otpHistory = JSON.parse(localStorage.getItem('otpHistory')) || [];
+                this.filteredHistory = [...this.otpHistory];
+                this.timer = null;
+                this.language = 'id';
+                this.sortKey = 'timestamp';
+                this.sortOrder = 'desc';
+
+                // Initialize
+                this.loadLanguage();
+                this.loadTheme();
+                this.loadHistory();
+                this.initializeEventListeners();
+
+                // Check URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const transactionId = urlParams.get('transactionId');
+                if (transactionId) {
+                    this.transactionIdInput.value = transactionId;
+                    this.showOtp();
+                }
+            }
+
+            initializeEventListeners() {
+                this.getOtpButton.addEventListener('click', () => this.showOtp());
+                this.copyOtpButton.addEventListener('click', () => this.copyOtp());
+                this.transactionIdInput.addEventListener('input', () => this.validateInput());
+                this.languageSelect.addEventListener('change', (e) => this.changeLanguage(e.target.value));
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+                this.exportHistoryButton.addEventListener('click', () => this.exportHistory());
+                this.transactionIdInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.showOtp();
+                });
+                this.historySearch.addEventListener('input', () => this.filterHistory());
+                this.historyTableBody.parentElement.querySelectorAll('.sortable').forEach(th => {
+                    th.addEventListener('click', () => this.sortHistory(th.dataset.sort));
+                });
+                this.modalCancel.addEventListener('click', () => this.closeModal());
+            }
+
+            showToast(message) {
+                this.toast.textContent = message;
+                this.toast.classList.add('show');
+                setTimeout(() => this.toast.classList.remove('show'), 3000);
+            }
+
+            showModal(message, onConfirm) {
+                this.modalMessage.textContent = message;
+                this.modal.style.display = 'flex';
+                this.modalConfirm.onclick = () => {
+                    onConfirm();
+                    this.closeModal();
+                };
+            }
+
+            closeModal() {
+                this.modal.style.display = 'none';
+            }
+
+            loadLanguage() {
+                const savedLanguage = localStorage.getItem('language') || 'id';
+                this.language = savedLanguage;
+                this.languageSelect.value = savedLanguage;
+                this.updateLanguage();
+            }
+
+            changeLanguage(lang) {
+                this.language = lang;
+                localStorage.setItem('language', lang);
+                this.updateLanguage();
+            }
+
+            updateLanguage() {
+                const texts = {
+                    id: {
+                        title: 'Manajemen OTP',
+                        back: 'Kembali',
+                        transactionId: 'ID Transaksi',
+                        placeholder: 'Masukkan ID Transaksi',
+                        getOtp: 'Lihat OTP',
+                        noTransaction: 'Masukkan ID transaksi terlebih dahulu!',
+                        expired: 'Sesi OTP telah selesai. Silakan masukkan ID transaksi lagi.',
+                        otpMessage: (id, otp) => `Kode OTP untuk transaksi ${id}: <span class="otp-code">${otp}</span>`,
+                        historyTitle: 'Riwayat OTP',
+                        exportHistory: 'Ekspor Riwayat',
+                        error: 'ID transaksi tidak boleh kosong!',
+                        copySuccess: 'OTP disalin ke clipboard!',
+                        deleteConfirm: 'Hapus entri riwayat ini?',
+                        searchPlaceholder: 'Cari ID Transaksi...',
+                        modalConfirm: 'Konfirmasi',
+                        modalCancel: 'Batal'
+                    },
+                    en: {
+                        title: 'OTP Management',
+                        back: 'Back',
+                        transactionId: 'Transaction ID',
+                        placeholder: 'Enter Transaction ID',
+                        getOtp: 'View OTP',
+                        noTransaction: 'Please enter a transaction ID first!',
+                        expired: 'OTP session has ended. Please enter the transaction ID again.',
+                        otpMessage: (id, otp) => `OTP code for transaction ${id}: <span class="otp-code">${otp}</span>`,
+                        historyTitle: 'OTP History',
+                        exportHistory: 'Export History',
+                        error: 'Transaction ID cannot be empty!',
+                        copySuccess: 'OTP copied to clipboard!',
+                        deleteConfirm: 'Delete this history entry?',
+                        searchPlaceholder: 'Search Transaction ID...',
+                        modalConfirm: 'Confirm',
+                        modalCancel: 'Cancel'
+                    }
+                };
+
+                document.getElementById('title').textContent = texts[this.language].title;
+                document.getElementById('back-text').textContent = texts[this.language].back;
+                document.getElementById('transaction-id-label').textContent = texts[this.language].transactionId;
+                this.transactionIdInput.placeholder = texts[this.language].placeholder;
+                document.getElementById('get-otp-text').textContent = texts[this.language].getOtp;
+                document.getElementById('history-title').textContent = texts[this.language].historyTitle;
+                document.getElementById('export-history-text').textContent = texts[this.language].exportHistory;
+                this.historySearch.placeholder = texts[this.language].searchPlaceholder;
+                document.getElementById('modal-confirm').textContent = texts[this.language].modalConfirm;
+                document.getElementById('modal-cancel').textContent = texts[this.language].modalCancel;
+                this.loadHistory();
+            }
+
+            loadTheme() {
+                const savedTheme = localStorage.getItem('darkMode') === 'true';
+                if (savedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.body.classList.add('dark-mode');
+                    this.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                }
+            }
+
+            toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                this.themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                localStorage.setItem('darkMode', isDark);
+            }
+
+            validateInput() {
+                const transactionId = this.transactionIdInput.value.trim();
+                if (!transactionId) {
+                    this.errorMessage.textContent = this.language === 'id' ? 'ID transaksi tidak boleh kosong!' : 'Transaction ID cannot be empty!';
+                    this.errorMessage.style.display = 'block';
+                    return false;
+                }
+                this.errorMessage.style.display = 'none';
+                return true;
+            }
+
+            generateOtp(transactionId) {
+                const hmac = CryptoJS.HmacSHA256(transactionId, this.secretKey);
+                const hash = hmac.toString(CryptoJS.enc.Hex);
+                return hash.substring(0, 6).replace(/\D/g, '').padEnd(6, '0');
+            }
+
+            async showOtp() {
+                if (!this.validateInput()) {
+                    this.showToast(this.language === 'id' ? 'ID transaksi tidak boleh kosong!' : 'Transaction ID cannot be empty!');
+                    return;
+                }
+
+                this.loading.style.display = 'flex';
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                const transactionId = this.transactionIdInput.value.trim();
+                const otp = this.generateOtp(transactionId);
+
+                this.otpDisplay.style.display = 'flex';
+                this.otpMessage.innerHTML = this.language === 'id'
+                    ? `Kode OTP untuk transaksi ${transactionId}: <span class="otp-code">${otp}</span>`
+                    : `OTP code for transaction ${transactionId}: <span class="otp-code">${otp}</span>`;
+                this.otpDisplay.className = 'otp-display fade-in';
+                this.copyOtpButton.style.display = 'inline-block';
+
+                this.saveToHistory(transactionId, otp);
+                this.startOtpTimer();
+
+                this.loading.style.display = 'none';
+            }
+
+            copyOtp() {
+                const otp = this.otpMessage.querySelector('.otp-code').textContent;
+                navigator.clipboard.writeText(otp).then(() => {
+                    this.showToast(this.language === 'id' ? 'OTP disalin ke clipboard!' : 'OTP copied to clipboard!');
+                });
+            }
+
+            startOtpTimer() {
+                if (this.timer) clearInterval(this.timer);
+
+                const tenMinutes = 10 * 60 * 1000;
+                const startTime = Date.now();
+                const endTime = startTime + tenMinutes;
+
+                const updateTimer = () => {
+                    const now = Date.now();
+                    const timeLeft = endTime - now;
+
+                    if (timeLeft <= 0) {
+                        this.otpDisplay.style.display = 'flex';
+                        this.otpMessage.textContent = this.language === 'id'
+                            ? 'Sesi OTP telah selesai. Silakan masukkan ID transaksi lagi.'
+                            : 'OTP session has ended. Please enter the transaction ID again.';
+                        this.otpDisplay.className = 'otp-display no-otp fade-in';
+                        this.copyOtpButton.style.display = 'none';
+                        this.timerContainer.style.display = 'none';
+                        clearInterval(this.timer);
+                        return;
+                    }
+
+                    const minutes = Math.floor(timeLeft / 1000 / 60);
+                    const seconds = Math.floor((timeLeft / 1000) % 60);
+                    this.timerContainer.style.display = 'block';
+                    this.timerDisplay.textContent = this.language === 'id'
+                        ? `Waktu tersisa: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+                        : `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                    const progress = (timeLeft / tenMinutes) * 100;
+                    this.progressFill.style.width = `${progress}%`;
+                };
+
+                updateTimer();
+                this.timer = setInterval(updateTimer, 1000);
+            }
+
+            saveToHistory(transactionId, otp) {
+                const timestamp = new Date().toLocaleString(this.language === 'id' ? 'id-ID' : 'en-US');
+                this.otpHistory.unshift({ transactionId, otp, timestamp });
+                if (this.otpHistory.length > 50) this.otpHistory.pop();
+                localStorage.setItem('otpHistory', JSON.stringify(this.otpHistory));
+                this.filteredHistory = [...this.otpHistory];
+                this.loadHistory();
+            }
+
+            filterHistory() {
+                const searchTerm = this.historySearch.value.toLowerCase();
+                this.filteredHistory = this.otpHistory.filter(entry =>
+                    entry.transactionId.toLowerCase().includes(searchTerm)
+                );
+                this.loadHistory();
+            }
+
+            sortHistory(key) {
+                if (this.sortKey === key) {
+                    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    this.sortKey = key;
+                    this.sortOrder = 'desc';
+                }
+
+                this.filteredHistory.sort((a, b) => {
+                    const valueA = a[key];
+                    const valueB = b[key];
+                    if (this.sortOrder === 'asc') {
+                        return valueA.localeCompare ? valueA.localeCompare(valueB) : valueA - valueB;
+                    }
+                    return valueB.localeCompare ? valueB.localeCompare(valueA) : valueB - valueA;
+                });
+
+                this.loadHistory();
+                this.updateSortIcons();
+            }
+
+            updateSortIcons() {
+                document.querySelectorAll('.sortable').forEach(th => {
+                    const icon = th.querySelector('i');
+                    icon.className = 'fas fa-sort';
+                    if (th.dataset.sort === this.sortKey) {
+                        icon.className = this.sortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                    }
+                });
+            }
+
+            loadHistory() {
+                this.historyTableBody.innerHTML = '';
+                this.filteredHistory.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.transactionId}</td>
+                        <td>${entry.otp}</td>
+                        <td>${entry.timestamp}</td>
+                        <td>
+                            <button class="action-btn" onclick="otpManager.reuseTransaction('${entry.transactionId}')">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            <button class="action-btn" onclick="otpManager.deleteHistory(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    this.historyTableBody.appendChild(row);
+                });
+            }
+
+            reuseTransaction(transactionId) {
+                this.transactionIdInput.value = transactionId;
+                this.showOtp();
+            }
+
+            deleteHistory(index) {
+                this.showModal(this.language === 'id' ? 'Hapus entri riwayat ini?' : 'Delete this history entry?', () => {
+                    this.otpHistory.splice(this.otpHistory.findIndex(entry => entry === this.filteredHistory[index]), 1);
+                    localStorage.setItem('otpHistory', JSON.stringify(this.otpHistory));
+                    this.filteredHistory.splice(index, 1);
+                    this.loadHistory();
+                    this.showToast(this.language === 'id' ? 'Entri riwayat dihapus!' : 'History entry deleted!');
+                });
+            }
+
+            exportHistory() {
+                if (this.otpHistory.length === 0) {
+                    this.showToast(this.language === 'id' ? 'Tidak ada riwayat untuk diekspor!' : 'No history to export!');
+                    return;
+                }
+
+                const csvContent = [
+                    ['Transaction ID', 'OTP Code', 'Timestamp'],
+                    ...this.otpHistory.map(entry => [
+                        `"${entry.transactionId}"`,
+                        entry.otp,
+                        `"${entry.timestamp}"`
+                    ])
+                ].map(row => row.join(',')).join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `otp-history-${new Date().toISOString().slice(0, 10)}.csv`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                this.showToast(this.language === 'id' ? 'Riwayat diekspor!' : 'History exported!');
+            }
+        }
+
+        let otpManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            otpManager = new OtpManager();
+        });
+    </script>
+</body>
+</html>
